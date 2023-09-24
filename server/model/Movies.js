@@ -11,10 +11,13 @@ const MovieSchema=mongoose.Schema({
         required: true,
       },
       actors: [{ type: String, required: true }],
+      duration:{type: String,required:true},
       releaseDate: {
         type: Date,
         required: true,
       },
+      language:[{type:String,required:true}],
+      genre:[{type:String,required:true}],
       posterUrl: {
         type: String,
         required: true,
@@ -23,12 +26,12 @@ const MovieSchema=mongoose.Schema({
         type: Boolean,
       },
       bookings: [],
-      theater: {
+      // theater: {
         
-        type: mongoose.Types.ObjectId,
-        ref: "Theater",
-        required: true,
-      },
+      //   type: mongoose.Types.ObjectId,
+      //   ref: "Theater",
+      //   required: true,
+      // },
 
 
 

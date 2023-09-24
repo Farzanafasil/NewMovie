@@ -3,7 +3,7 @@ import { Box, Button, Typography } from "@mui/material";
 import React, { useEffect, useState } from "react";
 import { Link } from "react-router-dom";
 
-import { getAllMovies } from "../Api/Api";
+
 import MovieItem from "./Movies/MovieItem";
 import axios from "axios";
 
@@ -11,13 +11,24 @@ const Home = () => {
 
 
   const [movies, setMovies] = useState([]);
+
   useEffect(() => {
-    getAllMovies()
-      .then((data) => setMovies(data.movies))
-      .catch((err) => console.log(err));
-    getAllMovies()
-  }, []);
   
+    axios.get('http://localhost:5000/api/movies').then((response)=>{
+
+   
+    setMovies( response.data.movies )
+
+    // console.log(response.data);
+  
+   
+  }).catch((Error)=>{
+    console.log(Error)
+  })
+
+   
+   
+  }, []);
 
   
   return (
@@ -43,12 +54,10 @@ const Home = () => {
         alignItems="center"
         flexWrap="wrap"
       >
-        {movies &&
-          movies
-            .slice(0, 4)
-            .map((movie, index) => (
+        {
+          movies&&movies.map((movie, index) => (
               <MovieItem
-                id={movie.id}
+                id={movie._id}
                 title={movie.title}
                 posterUrl={movie.posterUrl}
                 releaseDate={movie.releaseDate}

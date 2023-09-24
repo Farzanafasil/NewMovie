@@ -5,11 +5,19 @@ import {
     CardContent,
     Typography,
   } from "@mui/material";
-  import React from "react";
-  import { Link } from "react-router-dom";
+  import React, { useState } from "react";
+  import { Link ,useNavigate, useParams} from "react-router-dom";
+  
 
-const MovieItem = ({ title, releaseDate, posterUrl, id }) => {
+const MovieItem = ({title,posterUrl,releaseDate,id}) => {
+ 
+  console.log(id)
+  console.log(title)
+  
+  
+ 
   return (
+   
     <Card
     sx={{
       margin: 2,
@@ -21,7 +29,7 @@ const MovieItem = ({ title, releaseDate, posterUrl, id }) => {
       },
     }}
   >
-    <img height={"50%"} width="100%" src={posterUrl} alt={title} />
+    <img height={"60%"} width="100%" src={posterUrl} alt={title} />
     <CardContent>
       <Typography gutterBottom variant="h5" component="div">
         {title}
@@ -30,12 +38,13 @@ const MovieItem = ({ title, releaseDate, posterUrl, id }) => {
         {new Date(releaseDate).toDateString()}
       </Typography>
     </CardContent>
+   
     <CardActions>
       <Button
         variant="contained"
         fullWidth
         LinkComponent={Link}
-        to={`/booking/${id}`}
+        to={`/movies/${id}`}
         sx={{
           margin: "auto",
           bgcolor: "#2b2d42",
@@ -44,6 +53,8 @@ const MovieItem = ({ title, releaseDate, posterUrl, id }) => {
           },
         }}
         size="small"
+
+       
       >
         Book Now
       </Button>

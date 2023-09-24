@@ -1,16 +1,29 @@
 import { Box, Typography } from "@mui/material";
 import React, { useEffect, useState } from "react";
+import axios from "axios";
 
-import { getAllMovies } from "../../Api/Api";
+
 import MovieItem from './MovieItem';
 
 const Movies = () => {
-  const [movies, setMovies] = useState();
+  const [movies, setMovies] = useState([]);
   useEffect(() => {
-    getAllMovies()
-      .then((data) => setMovies(data.movies))
-      .catch((err) => console.log(err));
-  }, []);
+    getAllMovies();
+      
+ }, []);
+
+
+    
+const getAllMovies=()=>{
+  axios.get('http://localhost:5000/api/movies').then((response)=>{
+    setMovies(response.data.movies)
+   
+   
+  }).catch((Error)=>{
+    console.log(Error)
+  })
+
+}
   return (
     <Box margin={"auto"} marginTop={4}>
       <Typography

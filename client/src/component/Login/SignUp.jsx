@@ -1,6 +1,7 @@
 import React, { useState } from 'react';
 import axios from 'axios';
 import { useNavigate } from 'react-router-dom';
+// import './LogSign.css'
 
 const SignUp = () => {
   const [user, setUser] = useState({})
@@ -43,9 +44,12 @@ const SignUp = () => {
    
   return (
     <div className='container p-6 '>
+       <div className='header'>
+            <div className='text'>SignUp</div>
+        </div>
 
-<form>
-<div className="mb-3">
+
+<div className="inputs mb-3">
     <label for="exampleInputEmail1" class="form-label">name</label>
     <input type="text" class="form-control" id="name" aria-describedby="emailHelp" name='name'
     onChange={inputHandle}
@@ -59,34 +63,27 @@ const SignUp = () => {
     onChange={inputHandle}/>
     
   </div>
-  <div className="mb-3">
+  <div className="inputs mb-3">
     <label for="exampleInputPassword1" class="form-label">phone</label>
     <input type="password" class="form-control" id="phone" name='phone'
     onChange={inputHandle}/>
   </div>
-  <div className="mb-3">
+  <div className="inputs mb-3">
     <label for="exampleInputEmail1" class="form-label">Password</label>
     <input type="text" class="form-control" id="password" aria-describedby="emailHelp" name='password'
     onChange={inputHandle}/>
     
   </div>
-  <button type="submit" class="btn btn-primary" onClick={submit}>Submit</button>
-</form>
-        
-        
+  {/* <button type="submit" class="btn btn-primary" onClick={submit}>Submit</button> */}
+  <div className='submit-container'>
+        {/* <button type="button" onClick={addHandler}>
+          Submit
+        </button> */}
+        <div className='submit'onClick={submit}>Submit</div>
 
+        </div>
 
-
-
-
-
-
-
-
-
-
-
-
+   
     </div>
 
 );

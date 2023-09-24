@@ -1,5 +1,5 @@
 
-import { configureStore, createSlice } from "@reduxjs/toolkit";
+import { createSlice,configureStore } from "@reduxjs/toolkit";
 
 const userSclice = createSlice({
   name: "user",
@@ -10,32 +10,32 @@ const userSclice = createSlice({
     },
     logout(state) {
       localStorage.removeItem("userId");
+      localStorage.removeItem("token")
       state.isLoggedIn = false;
     },
   },
 });
-
-const adminSlice = createSlice({
-  name: "auth",
-  initialState: { isLoggedIn: false },
-  reducers: {
-    login(state) {
-      state.isLoggedIn = true;
+const theaterSlice=createSlice({
+  name:"TheaterAdmin",
+  initialState:{isLoggedIn:false},
+  reducers:{
+    login(state){
+      state.isLoggedIn=true;
     },
-    logout(state) {
-      localStorage.removeItem("adminId");
-      localStorage.removeItem("token");
-      state.isLoggedIn = false;
-    },
-  },
-});
+    logout(state){
+      localStorage.removeItem('theaterId')
+      localStorage.removeItem('token')
+      state.isLoggedIn=false;
+    }
+  }
+})
 
-export const userActions = userSclice.actions;
-export const adminActions = adminSlice.actions;
+export const userActions=userSclice.actions
+export const theaterActions=theaterSlice.actions
 
 export const store = configureStore({
   reducer: {
     user: userSclice.reducer,
-    admin: adminSlice.reducer,
+    theaterAdmin: theaterSlice.reducer,
   },
 });

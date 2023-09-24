@@ -19,6 +19,8 @@ app.use('/api',theater)
 const movies=require('./Routes/MovieRouter')
 app.use('/api',movies)
 
+const bookings=require('./Routes/BookingRouter')
+app.use('/api',bookings)
 app.listen((port),()=>{
     console.log(`port connetced to ${port}`)
 })

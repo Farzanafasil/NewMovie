@@ -53,6 +53,7 @@ const getAllMovies=()=>{
               posterUrl={movie.posterUrl}
               releaseDate={movie.releaseDate}
               title={movie.title}
+           
             />
           ))}
       </Box>

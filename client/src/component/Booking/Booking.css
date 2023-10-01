@@ -1,0 +1,22 @@
+.seat {
+    /* Default style for an available seat */
+    background-color: white;
+    color: black;
+    border: 1px solid black;
+    margin: 4px;
+    padding: 8px;
+    cursor: pointer;
+  }
+  
+  .booked {
+    /* Style for a booked seat */
+    background-color: red;
+    color: white;
+    cursor: not-allowed;
+  }
+  
+  .selected {
+    /* Style for a selected seat */
+    background-color: green;
+    color: white;
+  }

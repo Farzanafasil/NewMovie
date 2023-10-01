@@ -12,6 +12,7 @@ const Login = () => {
 
   const navigate = useNavigate();
   const dispatch=useDispatch()
+  const intendedDestination = new URLSearchParams(window.location.search).get('intended'); 
 
   const inputHandler = (e) => {
     setUser({
@@ -55,9 +56,18 @@ const Login = () => {
         localStorage.setItem("token",token)
         if (response.data.message === 'Login success') {
           // const userId=response.data.data._id
-          alert(response.data.message);
-          console.log(response.data)
-          navigate('/movies');
+
+          if(intendedDestination){
+            navigate(intendedDestination);
+
+          }
+          else {
+            // Redirect to a default page (e.g., home)
+            navigate('/userdashboard'); // Change '/home' to your default page URL
+          }
+          // alert(response.data.message);
+          // console.log(response.data)
+          
          
         } else {
           console.error('Login failed');

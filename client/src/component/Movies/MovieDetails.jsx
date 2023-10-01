@@ -3,6 +3,8 @@ import React, { useEffect, useState } from 'react'
 import { useParams ,useNavigate} from 'react-router-dom';
 import { Typography, Card, CardContent, CardMedia, Button ,Box} from '@mui/material';
 import { styled } from '@mui/system';
+import { userActions,theaterActions } from '../../store';
+import { useSelector, useDispatch } from 'react-redux';
 
 
 const StyledCard = styled(Card)(({ theme }) => ({
@@ -13,12 +15,14 @@ const StyledCard = styled(Card)(({ theme }) => ({
 
 
 const MovieDetails = ({movies}) => {
-   
-    const { id } = useParams(); 
-    const navigate=useNavigate()
-
-    const [loading, setLoading] = useState(true);
-    const [error, setError] = useState(null);
+  const navigate=useNavigate();
+  const dispatch=useDispatch();
+  const isTheaterLoggedIn=useSelector((state)=>state.theaterAdmin.isLoggedIn)
+  const isUserLoggedIn=useSelector((state)=>state.user.isLoggedIn)  
+ const { id } = useParams(); 
+  const [loading, setLoading] = useState(true);
+  const [error, setError] = useState(null);
+  const [intendedDestination, setIntendedDestination] = useState(null);
 
   const [movie,setMovie]=useState({})
   useEffect(()=>{
@@ -49,6 +53,24 @@ const MovieDetails = ({movies}) => {
  const cancleButton=()=>{
   navigate('/movies') 
  }
+
+const handleBookNowClick=()=>{
+  if (isUserLoggedIn) {
+  //  navigate('/booking') ;
+  // navigate(`/booking/${movie._id}`)
+
+  navigate(`/booking/${movie._id}?title=${encodeURIComponent(movie.title)}`);
+  } else if (isTheaterLoggedIn) {
+   
+  } else {
+    
+    alert("Please log in to book tickets.");
+    setIntendedDestination('/booking'); // Set the intended destination as the booking page
+    navigate(`/login?intended=${'/booking'}`); // Pass intended destination as a query parameter
+   
+  //  navigate('/login');
+  }
+}
 return (
   <Box p={5}>
 
@@ -79,7 +101,7 @@ return (
             <Button variant="contained" color="secondary" sx={{ width: '100%', marginBottom: 1 }} onClick={cancleButton}>
               Cancel
             </Button>
-            <Button variant="contained" color="primary"sx={{ width: '100%' }} >
+            <Button variant="contained" color="primary"sx={{ width: '100%' }} onClick={handleBookNowClick} >
               Book Now
             </Button>
           </Box>

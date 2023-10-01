@@ -19,6 +19,14 @@ import UserProfile from './component/Myprofile/UserProfile';
 import TheaterProfile from './component/Myprofile/TheaterProfile';
 import { theaterActions,userActions} from './store';
 import MovieDetails from './component/Movies/MovieDetails';
+import Booking from './component/Booking/Booking';
+import Payment from './component/Payment/Payment'
+
+import UserDashboard from './component/User/UserDashboard';
+
+import Mybooking from './component/Booking/Mybooking';
+import BookingDetailsPage from './component/Booking/BookingDetailsPage';
+import MovieReviewForm from './component/Movies/MovieReviewForm';
 
 
 
@@ -62,9 +70,20 @@ else if(localStorage.getItem('theaterId'))
     <Route path='/addmovies' element={<AddMovies method='post' data={{  title: '',  description: '', actors:[],releaseDate: '',posterUrl: '', featured: false,language: '',genre: '',duration: '',}}/>}/>
     <Route path='/theaterlogin' element={<TheaterLogin/>}/>
     <Route path='/myprofile' element={<UserProfile/>}/>
-   
-    <Route path='/theaterprofile' element={<TheaterProfile/>}/>
+     <Route path='/theaterprofile' element={<TheaterProfile/>}/>
     <Route path='/movies/:id' element={<MovieDetails/>}/>
+    <Route path='/booking' element={<Booking/>}/>
+    <Route path="/booking/:movieId" element={<Booking />} />
+    <Route path='/payment' element={<Payment/>}/>
+    
+    <Route path='/userdashboard'element={<UserDashboard/>}/>
+    <Route path='/mybooking' element={<Mybooking/>}/>
+    <Route path="/userdashboard/mybooking" component={Mybooking} />
+    <Route path='/bookingdetails/:bookingId'element={<BookingDetailsPage/>}/>
+
+    <Route path="/movies/:movieId/write-review" element={<MovieReviewForm />} />
+    
+   
     
     
     

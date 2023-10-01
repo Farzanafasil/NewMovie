@@ -1,0 +1,11 @@
+.book-now-button {
+    background-color: #2b2d42;
+    color: white;
+    margin-bottom: 10px; /* Adjust the spacing as needed */
+  }
+  
+  .write-review-button {
+    background-color: transparent;
+    border-color: #2b2d42;
+    color: #2b2d42;
+  }

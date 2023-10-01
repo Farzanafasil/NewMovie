@@ -21,6 +21,15 @@ app.use('/api',movies)
 
 const bookings=require('./Routes/BookingRouter')
 app.use('/api',bookings)
+const seat=require('./Routes/SeatRouter')
+app.use('/api',seat)
+const confirmemail=require('./Routes/ConfirmationRouter')
+app.use('/api',confirmemail)
+
+const reviews = require('./Routes/ReviewRoutes');
+
+app.use('/api', reviews);
+
 app.listen((port),()=>{
     console.log(`port connetced to ${port}`)
 })

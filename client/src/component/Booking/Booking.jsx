@@ -1,114 +1,240 @@
-import { Button, FormLabel, TextField, Typography } from "@mui/material";
-import { Box } from "@mui/system";
-import React, { Fragment, useEffect, useState } from "react";
-import { useParams } from "react-router-dom";
-import axios from 'axios'
+import React, { useEffect, useState } from 'react';
+import axios from 'axios';
+import { useParams , useLocation,useNavigate } from 'react-router-dom';
 
 
-const Booking = () => {
-  const [movie, setMovie] = useState();
-  const [inputs, setInputs] = useState({ seatNumber: "", date: "" });
-  const id = useParams().id;
-  console.log(id);
+function BookingPage() {
+  const [selectedDate, setSelectedDate] = useState('');
+  const [selectedSeats, setSelectedSeats] = useState([]);
+  const [ticketRate] = useState(10); // Set your ticket rate here
+  const [totalPrice, setTotalPrice] = useState(0);
+  const userId = localStorage.getItem('userId');
+  const { movieId } = useParams();
+  const [showConfirmation, setShowConfirmation] = useState(false);
+ 
+  const [validationError, setValidationError] = useState(null);
+  const location = useLocation();
+  const queryParams = new URLSearchParams(location.search);
+  const movieTitle = queryParams.get('title');
+  const navigate=useNavigate()
+  const [bookingId, setBookingId] = useState(null);
+  const [email, setEmail] = useState('');
+  // const [isTaskCompleted, setIsTaskCompleted] = useState(false);
+
+
+  const [bookedSeats, setBookedSeats] = useState([]);
+  const numRows = 6;
+  const seatsPerRow = 10;
+  const totalSeats = Array.from({ length: numRows * seatsPerRow }, (_, index) => `A ${index + 1}`);
+  console.log('movie is',movieTitle)
 
   useEffect(() => {
-     axios.get('http://localhost:5000/api/movies/'+id)
-      .then((response) => {
-        setMovie(response.data.movies)
-        console.log(movie)
-    
-    })
+    if (selectedDate) {
+      axios
+        .get(`http://localhost:5000/api/booking/${movieId}/${selectedDate}`)
+        .then((response) => {
+          const bookedSeatsData = response.data;
+          setBookedSeats(bookedSeatsData);
+        })
+        .catch((error) => {
+          console.log('Error:', error);
+        });
+    }
+  }, [selectedDate, movieId]);
 
-      .catch((err) => console.log(err));
-  }, [id]);
-  const handleChange = (e) => {
-    setInputs((prevState) => ({
-      ...prevState,
-      [e.target.name]: e.target.value,
-    }));
-  };
-  const handleSubmit = (e) => {
+  const selectDateChange = (e) => {
     e.preventDefault();
-    console.log(inputs);
-    // newBooking({ ...inputs, movie: movie._id })
-    //   .then((res) => console.log(res))
-    //   .catch((err) => console.log(err));
+    setSelectedDate(e.target.value);
+    setTotalPrice(0);
+    setSelectedSeats([]);
   };
-  return (
-    <div>
-      {movie && (
-        <Fragment>
-          <Typography
-            padding={3}
-            fontFamily="fantasy"
-            variant="h4"
-            textAlign={"center"}
-          >
-            Book TIckets Of Movie: {movie.title}
-          </Typography>
-          <Box display={"flex"} justifyContent={"center"}>
-            <Box
-              display={"flex"}
-              justifyContent={"column"}
-              flexDirection="column"
-              paddingTop={3}
-              width="50%"
-              marginRight={"auto"}
+
+  const handleSeatClick = (seat) => {
+    if (selectedSeats.includes(seat)) {
+      setSelectedSeats(selectedSeats.filter((selectedSeat) => selectedSeat !== seat));
+    } else {
+      setSelectedSeats([...selectedSeats, seat]);
+    }
+
+    calculateTotalPrice(selectedSeats.length + 1);
+  };
+
+  const calculateTotalPrice = (numSeats) => {
+    const price = numSeats * ticketRate;
+    setTotalPrice(price);
+  };
+
+  const renderSeatRows = () => {
+  
+    const seatRows = [];
+    for (let row = 0; row < numRows; row++) {
+      const rowSeats = totalSeats.slice(row * seatsPerRow, (row + 1) * seatsPerRow);
+      seatRows.push(
+        <div className="seat-row" key={`row-${row}`}>
+          {rowSeats.map((seat) => (
+            <button
+              key={seat}
+              className={`seat ${bookedSeats.includes(seat) ? 'booked' : selectedSeats.includes(seat) ? 'selected' : 'available'}`}
+              onClick={(e) => {handleSeatClick(seat)}}
+              disabled={bookedSeats.includes(seat)}
+              style={{ width: '50px', height: '50px' , borderRadius: '3px'}}
             >
-              <img
-                width="80%"
-                height={"300px"}
-                src={movie.posterUrl}
-                alt={movie.title}
-              />
-              <Box width={"80%"} marginTop={3} padding={2}>
-                <Typography paddingTop={2}>{movie.description}</Typography>
-                <Typography fontWeight={"bold"} marginTop={1}>
-                  Starrer:
-                  {movie.actors.map((actor) => " " + actor + " ")}
-                </Typography>
-                <Typography fontWeight={"bold"} marginTop={1}>
-                  Release Date: {new Date(movie.releaseDate).toDateString()}
-                </Typography>
-              </Box>
-            </Box>
-            <Box width={"50%"} paddingTop={3}>
-              <form onSubmit={handleSubmit}>
-                <Box
-                  padding={5}
-                  margin={"auto"}
-                  display="flex"
-                  flexDirection={"column"}
-                >
-                  <FormLabel>Seat Number</FormLabel>
-                  <TextField
-                    name="seatNumber"
-                    value={inputs.seatNumber}
-                    onChange={handleChange}
-                    type={"number"}
-                    margin="normal"
-                    variant="standard"
-                  />
-                  <FormLabel>Booking Date</FormLabel>
-                  <TextField
-                    name="date"
-                    type={"date"}
-                    margin="normal"
-                    variant="standard"
-                    value={inputs.date}
-                    onChange={handleChange}
-                  />
-                  <Button type="submit" sx={{ mt: 3 }}>
-                    Book Now
-                  </Button>
-                </Box>
-              </form>
-            </Box>
-          </Box>
-        </Fragment>
+              {seat}
+            </button>
+          ))}
+        </div>
+      );
+    }
+    return seatRows;
+  };
+  
+
+  const handleConfirm=(e)=>{
+    e.preventDefault();
+    if (!email) {
+      setValidationError('Please enter a mobile number or email.');
+      return;
+    }
+   
+    const newBooking={
+      userId:userId,
+      movieId:movieId,
+      date:selectedDate,
+      seatNumbers:selectedSeats,
+      ticketPrice:ticketRate,
+      totalPrice:totalPrice,
+      movieName:movieTitle
+     
+
+    }
+   
+   
+    axios.post('http://localhost:5000/api/newbooking',newBooking).then((response)=>{
+      
+
+    if (response.status === 201) {
+     
+      axios
+      .post('http://localhost:5000/api/sendconfirmationemail', {
+        email: email, // Use the email address entered by the user
+        message: 'Thank you for your booking!', // Customize your confirmation message
+      })
+          .then(() => {
+            alert('Booking successful! Confirmation email sent.');
+            const confirmBookingId = response.data.booking._id;
+            setBookingId(confirmBookingId);
+            navigate(`/bookingdetails/${confirmBookingId}`);
+          })
+          .catch((error) => {
+            alert('Booking successful, but confirmation email could not be sent.');
+            console.error('Error sending confirmation email:', error);
+          });
+      } else {
+        alert('Booking failed: ' + response.data.message);
+      }
+    setShowConfirmation(false);
+    })
+  }
+  const handleConfirmBooking = () => {
+    setShowConfirmation(true);
+  };
+
+  const handleCancelBooking = () => {
+    setShowConfirmation(false);
+  };
+  
+
+  return (
+    <div className='container'>
+     
+     {/* <div style={{ textAlign: 'center' }}>
+          <h3> Movie: {movieTitle} </h3>
+      </div> */}
+     
+     
+     <div style={{ width: '100%', padding: '20px', border: '1px solid #ccc', borderRadius: '5px' }} >
+     <div style={{ textAlign: 'center' }}>
+      <label>Moviename</label>
+      <input
+       type="text"
+       value={movieTitle}
+       readOnly
+       style={{ background: 'none', textAlign: 'center', fontSize: '18px' }}
+     />
+     </div>
+    <div className="booking-header" style={{ marginBottom: '20px' }}>
+    <h3>Select Date</h3>
+    <input
+      type="date"
+      value={selectedDate}
+      onChange={(e) => selectDateChange(e)}
+    />
+  </div>
+
+  <div className="booking-content" style={{ display: 'flex' }}>
+    <div className="seat-layout">
+      
+      {renderSeatRows()}
+    </div>
+  </div>
+
+  <div className="selected-seats" style={{ display: 'flex', justifyContent: 'center', marginTop: '20px' }}>
+    <h3>Selected Seats</h3>
+    <p>{selectedSeats.join(', ')}</p>
+  </div>
+
+  <div className="ticket-total-row" style={{ display: 'flex', justifyContent: 'space-between', marginTop: '20px' }}>
+    <div className="ticket-rate">
+      <h2>Ticket Rate</h2>
+      <p>${ticketRate} per seat</p>
+    </div>
+    <div className="total-price">
+      <h2>Total Price</h2>
+      <p>${totalPrice}</p>
+    </div>
+  </div>
+
+  <div style={{ textAlign: 'center',justifyContent:'space-between' }}>
+   
+      <button onClick={handleConfirmBooking}style={{
+        width: '150px',  // Set the desired width
+        backgroundColor: 'blue',  // Set the desired background color
+        color: 'white',  // Set the text color
+        borderRadius: '5px',  // Set the border radius
+        padding: '10px',  // Set padding
+        fontSize: '16px',  // Set font size
+        cursor: 'pointer',  // Add pointer cursor on hover
+        border: 'none',  // Remove border
+      }}>Confirm Booking</button>
+  </div>
+  {showConfirmation && (
+        <div className="confirmation-modal">
+        <h3>Confirm Booking</h3>
+        <input
+          type="text"
+          placeholder="Enter Mobile Number or Email"
+          value={email}
+          onChange={(e) => setEmail(e.target.value)}
+          // {(e) => setContactInfo(e.target.value)}
+          style={{ width: '100%', padding: '10px', marginBottom: '10px' }}
+        />
+        <div style={{ display: 'flex', justifyContent: 'center' }}>
+          <button onClick={handleConfirm} style={{ width: '100px', backgroundColor: 'blue', color: 'white', marginRight: '10px' }}>
+            Confirm
+          </button>
+          <button onClick={handleCancelBooking} style={{ width: '100px' }}>
+            Cancel
+          </button>
+        </div>
+      
+          {validationError && <p className="validation-error">{validationError}</p>}
+        </div>
       )}
     </div>
-  );
-};
+  
 
-export default Booking;
+  </div>
+);
+}
+
+export default BookingPage;

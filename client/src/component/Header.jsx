@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react'
+import React, { useState, useEffect } from 'react';
 import {AppBar, Box, Toolbar,Autocomplete,TextField,Tabs,Tab,Button} from '@mui/material'
 import axios  from 'axios';
 import { useDispatch ,useSelector} from 'react-redux';
@@ -6,15 +6,21 @@ import MovieCreationSharpIcon from '@mui/icons-material/MovieCreationSharp';
 import { Link, useNavigate } from "react-router-dom";
 
 import { theaterActions, userActions } from '../store';
+import Home from './Home';
 
 
-const Header = () => {
+
+// Create a context provider component
+
+
+const Header = ({ onSearch }) => {
 
   
   const dispatch=useDispatch()
-
+  const [searchTerm, setSearchTerm] = useState("");
   const isTheaterLoggedIn=useSelector((state)=>state.theaterAdmin.isLoggedIn)
   const isUserLoggedIn=useSelector((state)=>state.user.isLoggedIn)  
+  
 
   const [value,setValue]=useState(0)
 
@@ -43,13 +49,18 @@ const Header = () => {
   const handleChange = (e, val) => {
     const movie = movies.find((m) => m.title === val);
     console.log(movie);
-    if (isUserLoggedIn) {
-      // navigate(`/booking/${movie._id}`);
-    }
+    onSearch(val);
+    // if (isUserLoggedIn) {
+    //   // navigate(`/booking/${movie._id}`);
+    // }
+
+
   };
    
   
-  return<AppBar  position="sticky" sx={{bgcolor:"#2b2d42"}}>
+  return(
+  <div>
+  <AppBar  position="sticky" sx={{ bgcolor: "#2b2d42", minHeight: '60px' }}>
     <Toolbar>
        <Box width={"20%"}>
         <MovieCreationSharpIcon/>
@@ -90,14 +101,15 @@ const Header = () => {
             )}
             {isUserLoggedIn&&(
               <>
-                <Tab label='Profile' LinkComponent={Link} to='/myprofile'/>
+               <Tab label='myaccount' LinkComponent={Link} to='/userdashboard'/>
+                {/* <Tab label='Profile' LinkComponent={Link} to='/myprofile'/> */}
                 <Tab label='Logout' LinkComponent={Link} to='/' onClick={()=>dispatch(userActions.logout())}/>
       
               </>
 
             )}
             {isTheaterLoggedIn&&(<>
-                 <Tab label='Profile' LinkComponent={Link} to='/theaterprofile'/>
+                 <Tab label='myaccount' LinkComponent={Link} to='/theaterdashboard'/>
                 <Tab label='Logout' LinkComponent={Link} to='/' onClick={()=>dispatch(theaterActions.logout()) }/>
       
             
@@ -111,10 +123,14 @@ const Header = () => {
       </Tabs>
 
      </Box>
-         </Toolbar>
-    
+  </Toolbar>
+ 
+
   </AppBar>
-  
+
+{/* <Home searchTerm={searchTerm} /> */}
+</div>
+  )
 }
 
 export default Header

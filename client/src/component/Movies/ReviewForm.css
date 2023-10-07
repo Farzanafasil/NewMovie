@@ -51,3 +51,10 @@
 .review-form button:hover {
   background-color: #0056b3;
 }
+.main{
+  background-image: url('https://blogger.googleusercontent.com/img/b/R29vZ2xl/AVvXsEhY2vRLv586MAmpoaNLiyeh49p1YlpROS-_l0HyoNwcMtdyIQxtgxBoR8ptA1hnXCE1LVhxgyJ1TI26Bnjs3ljaZ-YoK-9s6AStlpQsNFnv-vD2qS1hSj5bb4Hf3tn3GwI1epKvDEpeQBpRUol5XZOegmq5Ld6hWaIhL-dM05RtAuqyMC-gqniJNcdeTQ/s1600/writing-product-services-reviews-online.jpg');
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-start;
+  background-size: cover; 
+}

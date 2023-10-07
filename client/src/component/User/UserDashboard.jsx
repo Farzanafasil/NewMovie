@@ -34,23 +34,26 @@ const UserDashboard = () => {
    
     <div className="user-dashboard">
     <div className="sidebar">
-      <h2>My account</h2>
+     
       <ul>
          <li>
-            <Link to="/myprofile">Profile</Link>
+            <Link to="/myprofile"><i className="fas fa-user" title="My Profile"></i></Link>
           </li>
           <li>
-          <Link to="/mybooking">My Bookings</Link>
+          <Link to="/mybooking"> <i className="fas fa-calendar-alt" title="My Bookings"></i></Link>
         </li>
-        <li>Settings</li>
+        <li>
+            <Link to="/myprofile"><i className="fas fa-user" title="My Profile"></i></Link>
+          </li>
+        <li></li>
       </ul>
     </div>
     <div className="content">
-      <h1>Welcome to Your Dashboard</h1>
+      {/* <h1>Welcome to Your Dashboard</h1> */}
       {/* <p>
         Lorem ipsum dolor sit amet, consectetur adipiscing elit. Nullam auctor est nec mauris
         ultricies, eu dapibus elit tincidunt.
-      </p> */} */}
+      </p> */} 
 
    
        <Box padding={5} margin="auto">

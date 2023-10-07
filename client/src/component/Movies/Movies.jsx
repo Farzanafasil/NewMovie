@@ -5,8 +5,10 @@ import axios from "axios";
 
 import MovieItem from './MovieItem';
 
-const Movies = () => {
+const Movies = ({ searchTerm }) => {
+  const [filteredMovies, setFilteredMovies] = useState([]);
   const [movies, setMovies] = useState([]);
+ 
   useEffect(() => {
     getAllMovies();
       
@@ -24,6 +26,15 @@ const getAllMovies=()=>{
   })
 
 }
+useEffect(() => {
+  // Filter movies based on the searchTerm, but only if searchTerm is not null or undefined
+  const filtered = movies.filter((movie) =>
+    searchTerm
+      ? movie.title.toLowerCase().includes(searchTerm.toLowerCase())
+      : true
+  );
+  setFilteredMovies(filtered);
+}, [searchTerm, movies]);
   return (
     <Box margin={"auto"} marginTop={4}>
       <Typography
@@ -46,13 +57,14 @@ const getAllMovies=()=>{
         flexWrap={"wrap"}
       >
         {movies &&
-          movies.map((movie, index) => (
+         filteredMovies.map((movie, index) => (
             <MovieItem
               key={index}
               id={movie._id}
               posterUrl={movie.posterUrl}
               releaseDate={movie.releaseDate}
               title={movie.title}
+          
            
             />
           ))}

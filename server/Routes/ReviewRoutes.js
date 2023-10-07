@@ -31,13 +31,15 @@ router.post('/reviews', async (req, res) => {
       if (existingReview) {
        return res.status(400).json({ message: 'User has already reviewed this movie' });
       }
-  
+      
       // Create a new review
+      const userName = user.name;
       const newReview = new reviewData({
         movie: movieId,
         user: userId,
         review,
         rating,
+        userName
       });
   
       const savedReview = await newReview.save();
@@ -74,7 +76,7 @@ router.get('/review/:id',async(res,req)=>{
 
   
   // Get reviews for a specific movie
-  router.get('/movie/:movieId', async (req, res) => {
+  router.get('/moviereview/:movieId', async (req, res) => {
     try {
       const movieId = req.params.movieId;
       const reviews = await reviewData.find({ movie: movieId });
@@ -108,15 +110,17 @@ router.get('/review/:id',async(res,req)=>{
   });
   
   // Delete a review by ID
-  router.delete('/:reviewId', async (req, res) => {
+  router.delete('/reviews/:reviewId', async (req, res) => {
     try {
       const reviewId = req.params.reviewId;
+     
   
       const deletedReview = await reviewData.findByIdAndDelete(reviewId);
   
       if (!deletedReview) {
         return res.status(404).json({ message: 'Review not found' });
       }
+      
   
       res.status(200).json({message:"deleted"});
     } catch (error) {

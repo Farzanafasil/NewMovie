@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useEffect, useState  } from "react";
 import axios from "axios";
 import { useParams ,useNavigate} from 'react-router-dom';
 import './ReviewForm.css';
@@ -10,6 +10,8 @@ function MovieReviewForm() {
   const { movieId } = useParams();
   const [hasUserReviewed, setHasUserReviewed] = useState(false);
   const userId = localStorage.getItem("userId");
+  const token= localStorage.getItem("token");
+  const navigate=useNavigate();
   console.log(`User ID: ${userId}, Movie ID: ${movieId}`);
 
   const handleReviewTextChange = (e) => {
@@ -20,10 +22,15 @@ function MovieReviewForm() {
     setRating(parseInt(e.target.value, 10));
   };
 
+  useEffect(()=>{
+    if(!token){
+      navigate('/unauth')
+    }
+  })
+
   const handleSubmit =async (e) => {
     e.preventDefault();
     
-
     try {
       // Send the review and rating data to your backend API
       const reviewData = {
@@ -44,6 +51,8 @@ function MovieReviewForm() {
   
         // Optionally, you can show a success message to the user
         alert('Review submitted successfully!');
+        navigate(`/movies/${movieId}`)
+        
       }
     } catch (error) {
       // Handle Axios errors
@@ -51,6 +60,7 @@ function MovieReviewForm() {
         // Server responded with an error (e.g., 400 Bad Request)
         console.error(error.response.data);
         alert('Error submitting review: ' + error.response.data.message);
+        navigate(`/movies/${movieId}`)
       } else {
         // Network error or other unexpected error
         console.error('An error occurred:', error.message);
@@ -60,11 +70,12 @@ function MovieReviewForm() {
   };
 
   return (
-    <div>
+    <div className='main' style={{ padding: '20px', paddingTop: '50px', backgroundImage: 'url("https://images.unsplash.com/photo-1574267432553-4b4628081c31?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxzZWFyY2h8M3x8Y2luZW1hJTIwc2VhdHN8ZW58MHx8MHx8fDA%3D&w=1000&q=80")', backgroundSize: 'cover', backgroundRepeat: 'no-repeat', backgroundAttachment: 'fixed' }}>
+    {/* Your content here */}
   {hasUserReviewed ? (
     <p>You have already reviewed this movie.</p>
   ) : (
-    <div className="form-container">
+  
  
   <form onSubmit={handleSubmit}>
   <h2 className="form-header">Write a Review</h2>
@@ -93,7 +104,7 @@ function MovieReviewForm() {
       Submit Review
     </button>
   </form>
-</div>
+
   )}
 </div>
   );

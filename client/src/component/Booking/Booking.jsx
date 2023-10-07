@@ -1,6 +1,7 @@
 import React, { useEffect, useState } from 'react';
 import axios from 'axios';
 import { useParams , useLocation,useNavigate } from 'react-router-dom';
+import './Booking.css'; 
 
 
 function BookingPage() {
@@ -64,29 +65,30 @@ function BookingPage() {
     setTotalPrice(price);
   };
 
-  const renderSeatRows = () => {
   
-    const seatRows = [];
-    for (let row = 0; row < numRows; row++) {
-      const rowSeats = totalSeats.slice(row * seatsPerRow, (row + 1) * seatsPerRow);
-      seatRows.push(
-        <div className="seat-row" key={`row-${row}`}>
-          {rowSeats.map((seat) => (
-            <button
-              key={seat}
-              className={`seat ${bookedSeats.includes(seat) ? 'booked' : selectedSeats.includes(seat) ? 'selected' : 'available'}`}
-              onClick={(e) => {handleSeatClick(seat)}}
-              disabled={bookedSeats.includes(seat)}
-              style={{ width: '50px', height: '50px' , borderRadius: '3px'}}
-            >
-              {seat}
-            </button>
-          ))}
-        </div>
-      );
-    }
-    return seatRows;
-  };
+    const renderSeatRows = () => {
+      const seatRows = [];
+      for (let row = 0; row < numRows; row++) {
+        const rowSeats = totalSeats.slice(row * seatsPerRow, (row + 1) * seatsPerRow);
+        seatRows.push(
+          <div className="seat-row" key={`row-${row}`}>
+            {rowSeats.map((seat) => (
+              <button
+                key={seat}
+                className={`seat ${bookedSeats.includes(seat) ? 'booked' : selectedSeats.includes(seat) ? 'selected' : 'available'}`}
+                onClick={(e) => handleSeatClick(seat)}
+                disabled={bookedSeats.includes(seat)}
+                style={{ width: '50px', height: '50px', borderRadius: '3px' }}
+              >
+                {seat}
+              </button>
+            ))}
+          </div>
+        );
+      }
+      return seatRows;
+    };
+  
   
 
   const handleConfirm=(e)=>{
@@ -141,44 +143,47 @@ function BookingPage() {
 
   const handleCancelBooking = () => {
     setShowConfirmation(false);
+    navigate('/movies')
   };
   
 
   return (
+  
+      
+    <div className='main' style={{ width:'100%',height:'100%', padding: '20px', border: '1px solid #ccc', borderRadius: '5px',paddingTop:'50px' }} > 
     <div className='container'>
-     
-     {/* <div style={{ textAlign: 'center' }}>
-          <h3> Movie: {movieTitle} </h3>
-      </div> */}
-     
-     
-     <div style={{ width: '100%', padding: '20px', border: '1px solid #ccc', borderRadius: '5px' }} >
-     <div style={{ textAlign: 'center' }}>
+     <div style={{ textAlign: 'center' }}>  
       <label>Moviename</label>
       <input
        type="text"
        value={movieTitle}
        readOnly
-       style={{ background: 'none', textAlign: 'center', fontSize: '18px' }}
+       style={{ background: 'none', textAlign: 'center', fontSize: '18px',color: 'rgb(247, 0, 255)' }}
      />
+     </div> 
+     <div className="booking-header" style={{ marginBottom: '20px' }}>
+      {/* <h3>Select Date</h3> */}
+         <label>SelecteDate</label>
+         <input
+         type="date"
+         value={selectedDate}
+         // onChange={(e) => selectDateChange(e)}
+         onChange={selectDateChange}
+        />
      </div>
-    <div className="booking-header" style={{ marginBottom: '20px' }}>
-    <h3>Select Date</h3>
-    <input
-      type="date"
-      value={selectedDate}
-      onChange={(e) => selectDateChange(e)}
-    />
-  </div>
+ 
 
-  <div className="booking-content" style={{ display: 'flex' }}>
-    <div className="seat-layout">
+   <div className="booking-content" style={{ display: 'flex' }}>
+   
+      <div className="seat-layout">
+      <button className="status-button booked">Booked</button>
+      <button className="status-button selected">Selected Seats</button>
+      <button className="status-button available">Available</button>
       
       {renderSeatRows()}
-    </div>
-  </div>
-
-  <div className="selected-seats" style={{ display: 'flex', justifyContent: 'center', marginTop: '20px' }}>
+      </div>
+  </div> 
+  <div className="selected-seats" style={{ display: 'flex', marginTop: '20px' }}>
     <h3>Selected Seats</h3>
     <p>{selectedSeats.join(', ')}</p>
   </div>
@@ -196,9 +201,12 @@ function BookingPage() {
 
   <div style={{ textAlign: 'center',justifyContent:'space-between' }}>
    
-      <button onClick={handleConfirmBooking}style={{
+      <button
+       type="button" 
+       onClick={handleConfirmBooking}
+       style={{
         width: '150px',  // Set the desired width
-        backgroundColor: 'blue',  // Set the desired background color
+        backgroundColor: 'red',  // Set the desired background color
         color: 'white',  // Set the text color
         borderRadius: '5px',  // Set the border radius
         padding: '10px',  // Set padding
@@ -207,22 +215,27 @@ function BookingPage() {
         border: 'none',  // Remove border
       }}>Confirm Booking</button>
   </div>
+
   {showConfirmation && (
         <div className="confirmation-modal">
         <h3>Confirm Booking</h3>
         <input
-          type="text"
-          placeholder="Enter Mobile Number or Email"
+          type="email"
+          required
+          placeholder="example@gmail.com"
           value={email}
           onChange={(e) => setEmail(e.target.value)}
           // {(e) => setContactInfo(e.target.value)}
           style={{ width: '100%', padding: '10px', marginBottom: '10px' }}
         />
         <div style={{ display: 'flex', justifyContent: 'center' }}>
-          <button onClick={handleConfirm} style={{ width: '100px', backgroundColor: 'blue', color: 'white', marginRight: '10px' }}>
+          <button   type="button" // Add this line
+            onClick={handleConfirm} style={{ width: '100px', backgroundColor: 'blue', color: 'white', marginRight: '10px' }}>
             Confirm
           </button>
-          <button onClick={handleCancelBooking} style={{ width: '100px' }}>
+          <button 
+           type="button" // Add this line
+            onClick={handleCancelBooking} style={{ width: '100px' }}>
             Cancel
           </button>
         </div>
@@ -230,10 +243,11 @@ function BookingPage() {
           {validationError && <p className="validation-error">{validationError}</p>}
         </div>
       )}
-    </div>
+ 
   
-
-  </div>
+   </div>
+   </div> 
+ 
 );
 }
 

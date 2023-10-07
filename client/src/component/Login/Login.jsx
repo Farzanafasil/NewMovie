@@ -4,6 +4,7 @@ import { useNavigate, Link } from 'react-router-dom';
 import './LogSign.css'
 import { useDispatch } from 'react-redux';
 import { userActions } from '../../store';
+import PasswordRecovery from './PasswordRecovery';
 const Login = () => {
   const [user, setUser] = useState({
     email: '',
@@ -13,12 +14,20 @@ const Login = () => {
   const navigate = useNavigate();
   const dispatch=useDispatch()
   const intendedDestination = new URLSearchParams(window.location.search).get('intended'); 
-
+  const [showRecoveryForm, setShowRecoveryForm] = useState(false);
+  const [errors, setErrors] = useState({
+      
+    email: '',
+    password: '',
+  });
   const inputHandler = (e) => {
     setUser({
       ...user,
       [e.target.name]: e.target.value,
     });
+  };
+  const toggleRecoveryForm = () => {
+    setShowRecoveryForm(!showRecoveryForm);
   };
   
   const onResRecived=(data)=>{
@@ -81,7 +90,7 @@ const Login = () => {
   };
   }
   return (
-    <div className="container">
+    <div className="">
       <form>
       <div className='header'>
             <div className='text'>Login</div>
@@ -89,31 +98,36 @@ const Login = () => {
         <div className="inputs mb-3 form-group">
           <label htmlFor="email" className="form-label">
             Email
+           <span style={{ color: 'red' }}>*</span>
           </label>
           <input
             type="text"
-            className="form-control form-control-sm"
+            className={`form-control ${errors.email ? 'is-invalid' : ''}`}
             id="email"
             name="email"
             placeholder="youremail@gmail.com"
             onChange={inputHandler}
           
           />
+          {errors.email && <div className="invalid-feedback">{errors.email}</div>}
         </div>
         <div className="inputs mb-3 form-group">
           <label htmlFor="password" className="form-label">
             Password
+            <span style={{ color: 'red' }}>*</span>
           </label>
           <input
             type="password"
-            className="form-control form-control-sm"
+            className={`form-control ${errors.password ? 'is-invalid' : ''}`}
             id="password"
             name="password"
            
             placeholder="**"
             onChange={inputHandler}
-            
-          />
+           
+       />
+          {errors.password && <div className="invalid-feedback">{errors.password}</div>}
+          
         </div>
         <div className='submit-container'>
         {/* <button type="button" onClick={addHandler}>
@@ -122,11 +136,18 @@ const Login = () => {
         <div className='submit'onClick={addHandler}>Login</div>
 
         </div>
-        <div className="forgot-password">Lost Password?<span>Click Here!</span></div>
+        <div className="forgot-password">Lost Password?<span  onClick={toggleRecoveryForm}>Click Here!</span></div>
         <div className='newuser'>
            Don't have an account? <Link to="/signup"><span>Sign up here</span> </Link>
         </div>
       </form>
+      {showRecoveryForm && (
+        <form>
+        <div className="password-recovery-popup">
+          <PasswordRecovery onClose={toggleRecoveryForm} />
+        </div>
+        </form>
+      )}
     </div>
   );
 };

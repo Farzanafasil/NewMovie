@@ -3,12 +3,14 @@ import {  BrowserRouter, Route, Router, Routes, Redirect } from 'react-router-do
 import Main from './component/Main';
 import React, { useEffect, useState } from 'react';
 import { useDispatch, useSelector } from "react-redux";
+import './App.css'
 
 import Header from "./component/Header";
 import Home from './component/Home';
 import TheaterOwner from './component/TheaterOwner/TheaterOwner';
 
 import Movies from './component/Movies/Movies';
+import Sidebar from './component/TheaterOwner/Sidebar';
 
 
 import SignUp from './component/Login/SignUp';
@@ -27,13 +29,15 @@ import UserDashboard from './component/User/UserDashboard';
 import Mybooking from './component/Booking/Mybooking';
 import BookingDetailsPage from './component/Booking/BookingDetailsPage';
 import MovieReviewForm from './component/Movies/MovieReviewForm';
-
+import TicketSales from './component/Tickets/TicketSales';
+import MoviesReviews from './component/TheaterOwner/MoviesReviews';
+import UnauthorizedUser from './component/UnauthorizedUser';
 
 
 
 function App() {
   const dispatch = useDispatch();
-  
+  const [searchTerm, setSearchTerm] = useState('');
 const isTheaterLoggedIn=useSelector((state)=>state.theaterAdmin.isLoggedIn)
 const isUserLoggedIn=useSelector((state)=>state.user.isLoggedIn)  
 console.log('theaterloggedin' ,isTheaterLoggedIn);
@@ -54,40 +58,56 @@ else if(localStorage.getItem('theaterId'))
   return (
     <div >
    
-   <Header />
+   <Header onSearch={setSearchTerm}/>
 
    <section>
-   <Routes>
-    <Route path='/' element={<Home/>}/>
- 
-    <Route path='/movies' element={<Movies/>}/>
+      <div className='conatiner'>
+      <div className="row">
+            {/* Render the Sidebar */}
+             
+            
+      </div>
    
-     <Route path='/theaterDashboard' element={<TheaterOwner/>}/>
+      <div className="col-md-9 main-content">
+       
+        <Routes>
 
-
-    <Route path='/signup' element={<SignUp/>}/>
-    <Route path='/login' element={<Login/>}/>
-    <Route path='/addmovies' element={<AddMovies method='post' data={{  title: '',  description: '', actors:[],releaseDate: '',posterUrl: '', featured: false,language: '',genre: '',duration: '',}}/>}/>
-    <Route path='/theaterlogin' element={<TheaterLogin/>}/>
-    <Route path='/myprofile' element={<UserProfile/>}/>
-     <Route path='/theaterprofile' element={<TheaterProfile/>}/>
-    <Route path='/movies/:id' element={<MovieDetails/>}/>
-    <Route path='/booking' element={<Booking/>}/>
-    <Route path="/booking/:movieId" element={<Booking />} />
-    <Route path='/payment' element={<Payment/>}/>
     
-    <Route path='/userdashboard'element={<UserDashboard/>}/>
-    <Route path='/mybooking' element={<Mybooking/>}/>
-    <Route path="/userdashboard/mybooking" component={Mybooking} />
-    <Route path='/bookingdetails/:bookingId'element={<BookingDetailsPage/>}/>
+        <Route path='/' element={<Home searchTerm={searchTerm}/>}/>
+   
+         <Route path='/movies' element={<Movies  searchTerm={searchTerm}/>}/>
+   
+        <Route path='/theaterDashboard' element={<TheaterOwner/>}/>
 
-    <Route path="/movies/:movieId/write-review" element={<MovieReviewForm />} />
+
+         <Route path='/signup' element={<SignUp method='post' data={{name:'',email:'',phone:'',password:''}}/>}/>
+        <Route path='/login' element={<Login/>}/>
+       <Route path='/addmovies' element={<AddMovies method='post' data={{  title: '',  description: '', actors:[],releaseDate: '',posterUrl: '', featured: false,language: '',genre: '',duration: '',}}/>}/>
+       <Route path='/theaterlogin' element={<TheaterLogin/>}/>
+       <Route path='/myprofile' element={<UserProfile/>}/>
+        <Route path='/theaterprofile' element={<TheaterProfile/>}/>
+       <Route path='/movies/:id' element={<MovieDetails/>}/>
+       <Route path='/booking' element={<Booking/>}/>
+       <Route path="/booking/:movieId" element={<Booking />} />
+       <Route path='/payment' element={<Payment/>}/>
+    
+       <Route path='/userdashboard'element={<UserDashboard/>}/>
+       <Route path='/mybooking' element={<Mybooking/>}/>
+      <Route path="/userdashboard/mybooking" component={Mybooking} />
+       <Route path='/bookingdetails/:bookingId'element={<BookingDetailsPage/>}/>
+
+       <Route path="/movies/:movieId/write-review" element={<MovieReviewForm />} />
+       <Route path='/ticketsales' element={<TicketSales/>}/>
+       <Route path='/moviesreviews' element={<MoviesReviews/>}/>
+       <Route path="/unauth" exact element={<UnauthorizedUser/>} />
+    
     
    
     
+    </Routes>
     
-    
-   </Routes>
+   </div>
+   </div>
    </section>
     </div>
   );

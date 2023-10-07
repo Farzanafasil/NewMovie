@@ -10,57 +10,90 @@ const movieData=require('../model/Movies')
 
 
 
-//add Movies
-router.post('/movies',async(req,res)=>{
-    let movie;
-    // let TheaterAdmin;
+// //add Movies
+//  router.post('/movies',async(req,res)=>{
+//     let movie;
+//     // let TheaterAdmin;
    
-             try {
-                  const { title, description,releaseDate, posterUrl, featured, actors ,duration,genre,language} = req.body;
-            //       jwt.verify(req.body.token,"Movie",(error,decoded)=>{
-            //          if(decoded&&decoded.email)
+//               try {               
+//                     const { title, description,releaseDate, posterUrl, featured, actors ,duration,genre,language} = req.body;      
+//                                 jwt.verify(req.body.token,"Movie",(error,decoded)=>{ 
 
-            //           { 
+//                                     if(decoded&&decoded.email)
 
-            //           }
-            //           else{
-            //                 res.json({message:"Unauthorized User"})
-            //              }
-            // })
-                        const existingtitle=await movieData.findOne({title:title})
-                        console.log(existingtitle);
-                        if(existingtitle)
-                        {
-                           res.json({message:"Movie Already Exist"})
+//                                     {  
+//                                         const existingtitle=movieData.findOne({title:title})
+//                                         console.log(existingtitle);
+//                                         if(existingtitle)
+//                                       {
+//                                         return res.json({message:"Movie Already Exist"})
                        
-                        }
-                         else{
+//                                      }
+//                                 const movie = new movieData({title,description, releaseDate: new Date(`${releaseDate}`),actors,duration,language ,genre,posterUrl ,featured});     
+                                  
+//                                 movie.save();         
+//                                 return res.status(201).json({message:"Movie Added"})
 
-                        
-                        //  TheaterAdmin=decoded.id;
-
-    
-                       const movie = new movieData({title,description, releaseDate: new Date(`${releaseDate}`),actors,duration,language ,genre,posterUrl ,featured});
-                    //    theater:TheaterAdmin,
-
-                      movie.save();
-                      return res.status(201).json({message:"Movie Added"})
-                
-                         }
-                   
+                               
+//                                   }
+//                                else{      
+//                                     res.json({message:"Unauthorized User"})  
+//                                    }                                
              
-        
-        
-} catch (error) {
-    console.log(error)
-        
+//                               })
+                              
+             
+// } catch (error) {
+//      console.log(error)
+//              }
+//  })
+
+ router.post('/movies', async (req, res) => {
+    try {
+      const { title, description, releaseDate, posterUrl, featured, actors, duration, genre, language, token } = req.body;
+  
+      // Verify the token
+      jwt.verify(req.body.token, "Movie", async (error, decoded) => {
+        if (error) {
+          console.error("Token verification error:", error);
+          return res.status(401).json({ message: "Unauthorized User" });
+        }
+  
+        if (!decoded || !decoded.email) {
+          return res.status(401).json({ message: "Unauthorized User" });
+        }
+  
+        // Continue with the movie creation
+        // Check if the movie title already exists
+        const existingTitle = await movieData.findOne({ title: title });
+  
+        if (existingTitle) {
+          // Movie title already exists, send an error response
+          return res.status(400).json({ message: "Movie Already Exists" });
+        } else {
+          // Create and save the new movie
+          const movie = new movieData({
+            title,
+            description,
+            releaseDate: new Date(`${releaseDate}`),
+            actors,
+            duration,
+            language,
+            genre,
+            posterUrl,
+            featured,
+          });
+          await movie.save();
+  
+          // Send a success response
+          return res.status(201).json({ message: "Movie Added" });
+        }
+      });
+    } catch (error) {
+      console.error("Server error:", error);
+      return res.status(500).json({ message: "Internal Server Error" });
     }
-})
-
-
-
-
-
+  });
 router.get('/movies', async(req,res)=>{
     try {
 

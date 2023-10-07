@@ -147,5 +147,40 @@ router.get('/bookingdetails/:bookingId',async(req,res)=>{
   }
 })
 
+router.get('/totalcollection/:movieId/:date', async (req, res) => {
+  // console.log('hgjgjg')
+  try {
+    const { movieId, date } = req.params;
+    const movieObjectId = new mongoose.Types.ObjectId(movieId);
+    // Calculate the total collection for the specified movie and date
+    const totalCollection = await BookingData.aggregate([
+      {
+        $match: {
+           movieId: movieObjectId,
+          
+
+          date: new Date(date),
+        },
+      },
+      {
+        $group: {
+          _id: null,
+          total: { $sum: '$totalPrice' }, // Sum of totalPrice from matching bookings
+        },
+      },
+    
+    ]);
+
+    if (totalCollection.length > 0) {
+      res.json({ totalCollection: totalCollection[0].total });
+    } else {
+      res.json({ totalCollection: 0 }); // No bookings found for the specified movie and date
+    }
+  } catch (error) {
+    console.error('Error calculating total collection:', error);
+    res.status(500).json({ error: 'Internal server error' });
+  }
+});
+
   module.exports = router;
   

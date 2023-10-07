@@ -11,7 +11,7 @@ app.use(cors());
 const port=5000
 
 
-const user=require('./Routes/userRoutes')
+const user=require('./Routes/UserRoutes')
 app.use('/api',user)
 const theater=require('./Routes/TheaterRoutes')
 app.use('/api',theater)
@@ -29,6 +29,8 @@ app.use('/api',confirmemail)
 const reviews = require('./Routes/ReviewRoutes');
 
 app.use('/api', reviews);
+const passwordRecovery=require('./Routes/PasswordRecoveryRouter')
+app.use('/api',passwordRecovery)
 
 app.listen((port),()=>{
     console.log(`port connetced to ${port}`)

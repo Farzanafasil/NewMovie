@@ -1,14 +1,20 @@
 import React, { useEffect, useState } from "react";
 import axios from "axios";
 import { Box, Typography, Button, Table, TableBody, TableCell, TableContainer, TableHead, TableRow, Paper } from "@mui/material";
+import { useNavigate } from "react-router-dom";
 
 const Mybooking = () => {
   const [bookings, setBookings] = useState([]);
+  const token= localStorage.getItem("token");
+ const navigate=useNavigate()
 
   useEffect(() => {
     // Fetch the user's bookings here
     const userId = localStorage.getItem("userId");
     console.log(userId)
+    if(!token){
+      navigate('/unauth')
+    }
     axios
       .get(`http://localhost:5000/api/booking/${userId}`)
       .then((response) => {

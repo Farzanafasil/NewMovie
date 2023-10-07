@@ -11,6 +11,10 @@ const reviewSchema = mongoose.Schema({
     type: mongoose.Schema.Types.ObjectId,
     ref: "users", // Reference to the User model
   },
+  userName: {  // Add the userName field
+    type: String,
+    required: true,
+  },
   review: String,
   rating: Number,
 });

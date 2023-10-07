@@ -21,7 +21,7 @@ router.post('/sendconfirmationemail', (req, res) => {
 
   // Define email content
   const emailContent = {
-    from: process.env.EMAIL_USER, // Use your email address as the sender
+    from: 'farzanaycet2009@gmail.com', // Use your email address as the sender
     to: email, // Recipient's email address
     subject: 'Booking Confirmation',
     text: message, // The confirmation message you want to send

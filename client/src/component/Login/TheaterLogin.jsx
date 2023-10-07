@@ -8,12 +8,41 @@ const TheaterLogin = () => {
 
     const dispatch=useDispatch()
     const navigate=useNavigate()
+    const [errors, setErrors] = useState({
+      
+      email: '',
+      password: '',
+    });
 
     const [input, setInput] = useState({
         email:'',
         password:''
     })
-
+    const validateForm = () => {
+      let isValid = true;
+      const newErrors = {};
+  
+      // Validate name (required)
+      
+  
+      // Validate email (required and valid format)
+      if (!input.email.trim()) {
+        newErrors.email = 'Email is required';
+        isValid = false;
+      } else if (!/^[a-zA-Z0-9._-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,4}$/.test(input.email)) {
+        newErrors.email = 'Invalid email format';
+        isValid = false;
+      }
+  
+      
+      if (!input.password.trim()) {
+        newErrors.password = 'Password is required';
+        isValid = false;
+      }
+  
+      setErrors(newErrors);
+      return isValid;
+    };
 
     const inputHandler=(e)=>{
 
@@ -33,6 +62,7 @@ const TheaterLogin = () => {
 
     const addHandler=(e)=>{
        e.preventDefault()
+       if (validateForm()){
        axios.post('http://localhost:5000/api/theaterlogin/',input)
        .then((response)=>{
 
@@ -54,11 +84,11 @@ const TheaterLogin = () => {
        .catch((error)=>{
         console.log(error)
        })
-        
+      }
     }
 
   return (
-    <div className="container">
+    <div className="">
     <form>
     <div className='header'>
           <div className='text'>Login</div>
@@ -69,12 +99,13 @@ const TheaterLogin = () => {
         </label>
         <input
           type="text"
-          className="form-control form-control-sm"
+          className={`form-control ${errors.email ? 'is-invalid' : ''}`}
           id="email"
           name="email"
           placeholder="youremail@gmail.com"
           onChange={inputHandler}
         />
+          {errors.email && <div className="invalid-feedback">{errors.email}</div>}
       </div>
       <div className="inputs mb-3 form-group">
         <label htmlFor="password" className="form-label">
@@ -82,12 +113,13 @@ const TheaterLogin = () => {
         </label>
         <input
           type="password"
-          className="form-control form-control-sm"
+          className={`form-control ${errors.password ? 'is-invalid' : ''}`}
           id="password"
           name="password"
           placeholder="**"
           onChange={inputHandler}
         />
+          {errors.password && <div className="invalid-feedback">{errors.password}</div>}
       </div>
       <div className='submit-container'>
       {/* <button type="button" onClick={addHandler}>

@@ -1,19 +1,22 @@
 
 import { Box, Button, Typography } from "@mui/material";
-import React, { useEffect, useState } from "react";
-import { Link } from "react-router-dom";
 
+import { Link } from "react-router-dom";
+import React, { useState, useEffect } from 'react';
 
 import MovieItem from "./Movies/MovieItem";
 import axios from "axios";
 
-const Home = () => {
+
+const Home = ({ searchTerm }) => {
 
 
   const [movies, setMovies] = useState([]);
 
+  const [filteredMovies, setFilteredMovies] = useState([]);
   useEffect(() => {
   
+   
     axios.get('http://localhost:5000/api/movies').then((response)=>{
 
    
@@ -30,7 +33,17 @@ const Home = () => {
    
   }, []);
 
-  
+  useEffect(() => {
+    // Filter movies based on the searchTerm, but only if searchTerm is not null or undefined
+    const filtered = movies.filter((movie) =>
+      searchTerm
+        ? movie.title.toLowerCase().includes(searchTerm.toLowerCase())
+        : true
+    );
+    setFilteredMovies(filtered);
+  }, [searchTerm, movies]);
+
+
   return (
     <Box width={"100%"} height="100%" margin="auto" marginTop={2}>
       <Box margin={"auto"} width="80%" height={"40vh"} padding={2}>
@@ -55,15 +68,17 @@ const Home = () => {
         flexWrap="wrap"
       >
         {
-          movies&&movies.map((movie, index) => (
+          filteredMovies.map((movie, index) => (
               <MovieItem
                 id={movie._id}
                 title={movie.title}
+               
                 posterUrl={movie.posterUrl}
                 releaseDate={movie.releaseDate}
                 key={index}
               />
-            ))}
+            ))} 
+             
       </Box>
       <Box display="flex" padding={5} margin="auto">
         <Button

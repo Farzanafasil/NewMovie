@@ -83,24 +83,15 @@ router.post('/user',async (req,res)=>{
 router.put('/user/:id',async(req,res)=>{
 
    try {
-    let id=req.params.id;
-    console.log(id)
+    let Id=req.params.id;
+    console.log(Id)
     const item={$set:req.body}
     console.log(item)
-    jwt.verify(req.body.token,"movie",(error,decoded)=>{
-        if(decoded&&decoded.email)
-        {
-        const user= userData.findByIdAndUpdate(id,item)
-        console.log(user)
-        return res.status(200).json({message:"Updated succesfully"})
-        }
-        else
-        {
-            res.json({message:"Unauthorized User"})
-        }
-    })
     
-    
+    const user= await userData.findByIdAndUpdate(Id,item)
+
+    return res.status(201).json({message:"Updated succesfully"})
+
    } 
    catch (error) { 
 

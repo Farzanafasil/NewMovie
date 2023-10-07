@@ -66,11 +66,12 @@ router.get('/theater',async(req,res)=>{
 
 router.get('/theater/:id',async(req,res)=>{
 
-    const id = req.params.id;
+    const Id = req.params.id;
+    console.log(Id)
   
     let TheaterAdmin;
     try {
-      TheaterAdmin = await theaterData.findById(id);
+      TheaterAdmin = await theaterData.findById(Id);
     } catch (err) {
       return console.log(err);
     }
@@ -133,4 +134,60 @@ router.post('/theaterlogin',async(req,res)=>{
 
 
 })
+
+
+
+
+router.put('/theater/:id', async (req, res) => {
+    try {
+      const Id = req.params.id;
+      if (!mongoose.Types.ObjectId.isValid(Id)) {
+        return res.status(400).json({ message: 'Invalid ObjectId' });
+      }
+      const updatedItem ={$set:req.body}; // You don't need to wrap it in $set
+  
+      const theater = await theaterData.findByIdAndUpdate(Id, updatedItem);
+  
+      if (!theater) {
+        return res.status(404).json({ message: "Theater not found" });
+      }
+  
+      return res.status(201).json({ message: "Updated successfully" });
+    } catch (error) {
+      console.error("Error updating theater:", error);
+      res.status(500).json({ error: "Internal server error" });
+    }
+  });
+
+
+  router.post('/change-password', async (req, res) => {
+    try {
+      const { token, newPassword } = req.body;
+  
+      // Find the user with the provided token
+      const user = await theaterData.findOne({
+        passwordResetToken: token,
+        passwordResetTokenExpiration: { $gte: Date.now() },
+      });
+  
+      if (!user) {
+        // Token is invalid or has expired, return an error message
+        return res.status(400).json({ message: 'Invalid or expired token' });
+      }
+  
+      // Update the user's password and clear the reset token fields
+      user.password = newPassword;
+      user.passwordResetToken = undefined;
+      user.passwordResetTokenExpiration = undefined;
+  
+      // Save the updated user document
+      await user.save();
+  
+      res.status(200).json({ message: 'Password changed successfully' });
+    } catch (error) {
+      console.error('Error in change password route:', error);
+      res.status(500).json({ message: 'Internal server error' });
+    }
+  });
+
 module.exports=router;

@@ -1,7 +1,8 @@
-import React, { useState } from 'react'
+import React, { useState , useEffect } from 'react'
 import axios from 'axios';
 import { Form, Button } from 'react-bootstrap';
 import CloseRoundedIcon from "@mui/icons-material/CloseRounded";
+import { useNavigate } from 'react-router-dom';
 import './AddMovies.css'
 import {
   Dialog,
@@ -12,10 +13,12 @@ import { Link } from "react-router-dom";
 
 const AddMovies = (props) => {
   console.log(props)
-   
+   const navigate=useNavigate();
     const genres = ['Action', 'Adventure', 'Comedy', 'Drama', 'Fantasy', 'Sci-Fi'];
     const language=['Malayalam','Hindi','English','Tamil']
-    const [isFormOpen, setIsFormOpen] = useState(false);
+    const [isFormOpen, setIsFormOpen] = useState(true);
+    const [tokenValid, setTokenValid] = useState(false);
+    const token= localStorage.getItem("token")
 
     // const[newMovies,setNewMovies]=useState({
     //     title: '',
@@ -55,8 +58,22 @@ const AddMovies = (props) => {
         
       };
 
-
+      useEffect(() => {
+        // Function to validate the token
+        const token= localStorage.getItem("token")
+        console.log(token)
+        
+        if(!token)
+        {
+          navigate('/unauth')
+        }
+    
+        // Validate the token when the component mounts
+    
+      }, [token, navigate]);
+    
 const addMovies=(e)=>{
+  const token= localStorage.getItem("token")
     e.preventDefault();
     let data= {
          ...newMovies,
@@ -69,20 +86,28 @@ const addMovies=(e)=>{
         // language:newMovies.language,
         // genre: newMovies.genre,
         // duration:newMovies.duration,
-         actors: newMovies.actors.split(',').map((actor) => actor.trim()), // Split into an array
+         actors: newMovies.actors.split(',').map((actor) => actor.trim()), 
+         token:token,// Split into an array
       };
      console.log("data",data)
   
   if(props.method==='post'){
-
-  
+   
       axios.post('http://localhost:5000/api/movies/', data)
         .then((response) => {
 
           if (response.status===201) {
             alert(response.data.message);
+           
+            navigate('/theaterdashboard')
         
-          } else {
+          } else 
+          if(response.data.message==='Unauthorized User')
+          {
+            alert(response.data.message);
+            return navigate("/unauth")
+          }
+          else {
             alert(response.data.message);
           }
         })
@@ -97,6 +122,7 @@ if (props.method === "put") {
     .then((response) => {
       if (response.data.message === "Updated succesfully") {
         alert(response.data.message);
+        navigate('/theaterdashboard')
        
       } else {
         alert(response.data.message);
@@ -105,6 +131,7 @@ if (props.method === "put") {
     .catch((err) => {
       console.log(err);
     });
+
 }
 setIsFormOpen(false); 
 }
@@ -112,19 +139,25 @@ const handleCancel = () => {
   // Add logic to cancel the addition of a movie (e.g., clear form fields)
   
   setIsFormOpen(false);
+  navigate('/theaterdashboard')
+};
+const handleCloseDialog = () => {
+  // Close the dialog when the CloseRoundedIcon is clicked
+  console.log('btn clicked')
+  setIsFormOpen(false);
 };
   return (
   
     <div className='conatiner' >
       
-        <Dialog  open={true}>
+        <Dialog open={isFormOpen} onClose={() => setIsFormOpen(false)} >
        
       
       <Form className='container'>
       <Box sx={{ ml: "auto", padding: 1 }}>
-        <IconButton LinkComponent={Link} to="/theaterdashboard">
-          <CloseRoundedIcon />
-        </IconButton>
+      <IconButton component={Link} to="/theaterdashboard">
+            <CloseRoundedIcon onClick={handleCloseDialog} />
+          </IconButton>
       </Box>
           <h1>Add Movie</h1>
         <Form.Group controlId="name">
@@ -178,21 +211,22 @@ const handleCancel = () => {
              onChange={handleInputChange}
               className="mr-2"
             />
+            
             <Form.Control
-              as="select"
-              name="language"
-             value={newMovies.language}
-             onChange={handleInputChange}
-              className="mr-2"
-            >
-              <option value="">Select Language</option>
-              {language.map((language)=>(
-                <option key={language} value={language}>{language}</option>
-              )
-
-              )}
-              {/* Add more language options */}
-            </Form.Control>
+          as="select"
+          name="language"
+          value={newMovies.language}
+          onChange={handleInputChange}
+         className="mr-2"
+          >
+      <option value="">Select Language</option>
+      {language.map((languageOption) => (
+        <option key={languageOption} value={languageOption}>
+          {languageOption}
+        </option>
+      ))}
+      {/* Add more language options */}
+    </Form.Control>
           </div>
         </Form.Group>
         <Form.Group controlId="genre">

@@ -1,22 +1,72 @@
-.seat {
-    /* Default style for an available seat */
-    background-color: white;
-    color: black;
-    border: 1px solid black;
-    margin: 4px;
-    padding: 8px;
-    cursor: pointer;
+
+ 
+  .container{
+
+    background-image: url('https://static.independent.co.uk/s3fs-public/thumbnails/image/2015/12/17/14/cinema-getty.jpg?width=1200');
+    color:white;
+  }
+   
+    .main{
+      background-image: url('https://d1mnxluw9mpf9w.cloudfront.net/media/1263/felix-mooneeram-evlkOfkQ5rE-unsplash--2-.jpg'); 
+      background-attachment: fixed; /* Keeps the background image fixed while scrolling */
+    }
+  .BookingPage {
+    display: flex;
+    justify-content: space-between;
+    align-items: flex-start;
+    /* Add other CSS properties as needed */
+    color: rgb(247, 0, 255);
+    
+   } */
+  
+  /* Add styles for the left content */
+  .BookingPage .booking-left {
+    flex: 1; /* Distributes available space equally between left and right content */
+    padding: 20px;
+    border: 1px solid #ccc;
+    border-radius: 5px;
+    text-align: center;
+    margin-right: 20px; /* Add margin between left and right content */
   }
   
-  .booked {
-    /* Style for a booked seat */
-    background-color: red;
-    color: white;
-    cursor: not-allowed;
+  /* Add styles for the right content */
+  .BookingPage .booking-right {
+    flex: 1;
+    padding: 20px;
+    text-align: center;
   }
   
-  .selected {
-    /* Style for a selected seat */
-    background-color: green;
-    color: white;
+  /* Additional styles for your elements */
+  .BookingPage .seat-layout {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 5px;
+    /* Add other styles for seat layout as needed */
   }
+  
+
+.booked {
+  background-color: red;
+  color: white;
+}
+
+.selected {
+  background-color: green;
+  color: white;
+}
+
+.available {
+  background-color: white;
+  color: black;
+}
+.status-button {
+  padding: 10px;
+  margin-right: 10px;
+  border: none;
+  color: white;
+  cursor: pointer;
+  border-radius: 5px;
+}
+.available {
+  background-color: blue; /* Change this color to your desired color for available seats */
+}
